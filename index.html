@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0a3d2e">
+  <title>CridoSales</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="app">
+
+  <header>
+    <div>
+      <h2>CridoSales</h2>
+      <p>Simple sales & debt manager</p>
+    </div>
+    <div class="date" id="todayDate"></div>
+  </header>
+
+  <!-- SUMMARY -->
+  <section class="summary">
+
+    <div class="summary-card">
+      <span>Today's Sales</span>
+      <strong id="todayTotal">₦0</strong>
+    </div>
+
+    <div class="summary-card">
+      <span>Credit Given</span>
+      <strong id="todayDebt">₦0</strong>
+    </div>
+
+    <div class="summary-card danger">
+      <span>Total Owed</span>
+      <strong id="totalOwed">₦0</strong>
+    </div>
+
+  </section>
+
+  <!-- NEW SALE -->
+  <section class="card">
+
+    <h3>Record Sale</h3>
+
+    <input id="itemName"
+           type="text"
+           placeholder="Item e.g. Rice">
+
+    <input id="itemPrice"
+           type="number"
+           inputmode="decimal"
+           placeholder="Amount ₦">
+
+    <input id="custName"
+           type="text"
+           placeholder="Customer name (for credit sale)">
+
+    <div class="row">
+
+      <button onclick="addSale(false)">
+        Cash Sale
+      </button>
+
+      <button onclick="addSale(true)" class="debt">
+        Credit Sale
+      </button>
+
+    </div>
+
+  </section>
+
+  <!-- TODAY -->
+  <section>
+
+    <div class="section-title">
+      <h3>Today's Sales</h3>
+      <span id="salesCount">0</span>
+    </div>
+
+    <div id="salesList"></div>
+
+  </section>
+
+  <!-- DEBTORS -->
+  <section>
+
+    <div class="section-title">
+      <h3>People Who Owe</h3>
+      <span id="debtorCount">0</span>
+    </div>
+
+    <input
+      id="searchCustomer"
+      type="text"
+      placeholder="Search customer..."
+      oninput="renderDebtors()"
+    >
+
+    <div id="debtList"></div>
+
+  </section>
+
+  <!-- CUSTOMER PAYMENT -->
+  <section class="card">
+
+    <h3>Record Payment</h3>
+
+    <input
+      id="paymentCustomer"
+      type="text"
+      placeholder="Customer name"
+    >
+
+    <input
+      id="paymentAmount"
+      type="number"
+      inputmode="decimal"
+      placeholder="Amount paid ₦"
+    >
+
+    <button onclick="recordPayment()" class="payment">
+      Record Payment
+    </button>
+
+  </section>
+
+  <button class="clear" onclick="clearAll()">
+    Clear All Data
+  </button>
+
+  <p class="brand">
+    Built @ Cridonix Technologies
+  </p>
+
+</div>
+
+<script src="app.js"></script>
+
+</body>
+</html>
