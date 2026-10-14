@@ -15,7 +15,7 @@
   <header>
     <div>
       <h2>CridoSales</h2>
-      <p>Track Your Sales</p>
+      <p>Simple sales & debt manager</p>
     </div>
     <div class="date" id="todayDate"></div>
   </header>
@@ -84,6 +84,70 @@
 
   </section>
 
+  <!-- SALES HISTORY -->
+  <section>
+
+    <div class="section-title">
+      <h3>Sales History</h3>
+      <span id="historyCount">0</span>
+    </div>
+
+    <div class="history-nav">
+
+      <button class="nav-button" onclick="changeHistoryDay(-1)">
+        ‹
+      </button>
+
+      <div class="history-date" id="historyDate"></div>
+
+      <button class="nav-button" onclick="changeHistoryDay(1)">
+        ›
+      </button>
+
+    </div>
+
+    <div class="jump-row">
+      <label for="jumpDate">Jump to date:</label>
+      <input
+        id="jumpDate"
+        type="date"
+        onchange="jumpToDate(this.value)"
+      >
+      <button class="small-button today-button" onclick="jumpToDate('')">
+        Today
+      </button>
+    </div>
+
+    <input
+      id="searchHistory"
+      type="text"
+      placeholder="Search all sales (item or customer)..."
+      oninput="renderHistory()"
+    >
+
+    <div class="summary history-summary">
+
+      <div class="summary-card">
+        <span>Total Sales</span>
+        <strong id="historyTotal">₦0</strong>
+      </div>
+
+      <div class="summary-card">
+        <span>Credit Given</span>
+        <strong id="historyDebt">₦0</strong>
+      </div>
+
+      <div class="summary-card">
+        <span>Cash Collected</span>
+        <strong id="historyCash">₦0</strong>
+      </div>
+
+    </div>
+
+    <div id="historyList"></div>
+
+  </section>
+
   <!-- DEBTORS -->
   <section>
 
@@ -127,6 +191,100 @@
 
   </section>
 
+  <!-- PAYMENT HISTORY -->
+  <section>
+
+    <div class="section-title">
+      <h3>Payment History</h3>
+      <span id="paymentCount">0</span>
+    </div>
+
+    <div id="paymentList"></div>
+
+  </section>
+
+  <!-- REPORTS -->
+  <section>
+
+    <div class="section-title">
+      <h3>Monthly Report</h3>
+      <span id="reportCount">0</span>
+    </div>
+
+    <div class="history-nav">
+
+      <button class="nav-button" onclick="changeReportMonth(-1)">
+        ‹
+      </button>
+
+      <div class="history-date" id="reportMonth"></div>
+
+      <button class="nav-button" onclick="changeReportMonth(1)">
+        ›
+      </button>
+
+    </div>
+
+    <div class="summary report-summary">
+
+      <div class="summary-card">
+        <span>Total Sales</span>
+        <strong id="reportTotal">₦0</strong>
+      </div>
+
+      <div class="summary-card">
+        <span>Credit Given</span>
+        <strong id="reportDebt">₦0</strong>
+      </div>
+
+      <div class="summary-card">
+        <span>Cash Collected</span>
+        <strong id="reportCash">₦0</strong>
+      </div>
+
+      <div class="summary-card">
+        <span>Payments In</span>
+        <strong id="reportPayments">₦0</strong>
+      </div>
+
+    </div>
+
+    <div id="reportInsights"></div>
+
+  </section>
+
+  <!-- BACKUP & RESTORE -->
+  <section class="card">
+
+    <h3>Backup & Restore</h3>
+
+    <p class="hint">
+      Save a copy of your sales and payments, or restore from a
+      previous backup file.
+    </p>
+
+    <div class="row">
+
+      <button onclick="exportData()" class="backup">
+        Download Backup
+      </button>
+
+      <button onclick="document.getElementById('importFile').click()" class="restore">
+        Restore Backup
+      </button>
+
+    </div>
+
+    <input
+      type="file"
+      id="importFile"
+      accept="application/json,.json"
+      onchange="importData(event)"
+      hidden
+    >
+
+  </section>
+
   <button class="clear" onclick="clearAll()">
     Clear All Data
   </button>
@@ -135,6 +293,80 @@
     Built @ Cridonix Technologies
   </p>
 
+</div>
+
+
+<div class="modal-overlay" id="customerModal" onclick="closeCustomer(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+
+    <div class="modal-head">
+      <h3 id="customerModalName">Customer</h3>
+      <button class="modal-close" onclick="closeCustomer()">✕</button>
+    </div>
+
+    <div class="modal-balance">
+      <span>Outstanding Balance</span>
+      <strong id="customerModalBalance">₦0</strong>
+    </div>
+
+    <div class="row">
+      <button class="small-button statement-button" onclick="shareStatement()">
+        Share Statement
+      </button>
+    </div>
+
+    <div class="modal-tabs">
+      <button class="tab active" id="tabCredit" onclick="switchCustomerTab('credit')">
+        Credit Sales
+      </button>
+      <button class="tab" id="tabPayments" onclick="switchCustomerTab('payments')">
+        Payments
+      </button>
+    </div>
+
+    <div id="customerModalBody"></div>
+
+  </div>
+</div>
+
+<!-- RECEIPT MODAL -->
+<div class="modal-overlay" id="receiptModal" onclick="closeReceipt(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+
+    <div class="modal-head">
+      <h3>Receipt</h3>
+      <button class="modal-close" onclick="closeReceipt()">✕</button>
+    </div>
+
+    <div id="receiptBody"></div>
+
+    <div class="row">
+      <button onclick="printReceipt()" class="payment">Print / Save PDF</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- EDIT SALE MODAL -->
+<div class="modal-overlay" id="editModal" onclick="closeEditSale(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+
+    <div class="modal-head">
+      <h3>Edit Sale</h3>
+      <button class="modal-close" onclick="closeEditSale()">✕</button>
+    </div>
+
+    <div class="card">
+      <input id="editItemName" type="text" placeholder="Item name">
+      <input id="editItemPrice" type="number" inputmode="decimal" placeholder="Amount ₦">
+      <input id="editCustName" type="text" placeholder="Customer name (for credit sale)">
+    </div>
+
+    <div class="row">
+      <button onclick="saveEditSale()" class="payment">Save Changes</button>
+    </div>
+
+  </div>
 </div>
 
 <script src="app.js"></script>
